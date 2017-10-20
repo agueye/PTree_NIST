@@ -7,7 +7,7 @@ g_base='../../../../datafiles/data-ITDK/'
 
 
 dataset="data-Geolocation/"
-#dataset="data-ASN/"
+dataset="data-ASN/"
 
 if dataset=="data-Geolocation/":
     years=[2015, 2016]

@@ -86,7 +86,13 @@ def import_involved(filename,src,threshold=0):
                 if linecount % 20000000==0:
                     print(" ",linecount)         
             linedata=line.split('|')
-            assert len(linedata)>=4
+            #assert len(linedata)>=4
+            if linedata[0]=='??': continue
+
+
+            if len(linedata)<4:
+                linedata.insert(1,linedata[0])
+
             cclist,pathcount=cleanline(linedata)
             if len(cclist)==0 or cclist[0]!=src: # cclist has unknowns or doesn't pertain to src
                 continue
@@ -196,7 +202,7 @@ cc2name=pickle.load(fileobject,encoding='latin1')
 fileobject.close()
 
 dataset="data-Geolocation/"
-#dataset="data-ASN/"
+dataset="data-ASN/"
 
 if dataset=="data-Geolocation/":
     years=[2015, 2016]

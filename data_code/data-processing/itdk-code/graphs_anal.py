@@ -11,13 +11,13 @@ base='../../../../datafiles/data-ITDK/'
 ds=['2015-08','2016-03','2016-09']
 
 for d in ds:
-    G = nx.read_gpickle(base+"World.cc."+d+".gpickle.gz")
+    G = nx.read_gpickle(base+"Africa.cc."+d+".gpickle.gz")
     bc=nx.betweenness_centrality(G)
     print("Dataset: ",d)
     print(nx.info(G))
-    print(bc)
+    #print(bc)
     print("\n")
     #print(G.nodes())
 
-#nx.draw(G,with_labels = True)
-#plt.show()
+    nx.draw(G,with_labels = True)
+    plt.show()

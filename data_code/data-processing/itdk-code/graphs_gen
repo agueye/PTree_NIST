@@ -7,6 +7,6 @@
 # python build_graph.py '2014-04' 0&
 # python build_graph.py '2014-12' 0&
 
-#python build_graph.py '2015-08' 0&
-python build_graph.py '2016-03' 0&
-#python build_graph.py '2016-09' 0&
+python build_graph_Afr.py '2015-08' 0&
+python build_graph_Afr.py '2016-03' 0&
+python build_graph_Afr.py '2016-09' 0&
