@@ -52,7 +52,7 @@ main()
   char buf[4096] = "";
   char pfx_buf[128] = "";
   bgpstream_addr_storage_t  *ip_addr_strg=NULL;
-  bgpstream_addr_version_t *ver=NULL;
+  bgpstream_addr_version_t ver;
   int ip_version=0;
   
 
@@ -69,9 +69,10 @@ main()
           while((bs_elem = bgpstream_record_get_next_elem (bs_record)) != NULL)
             {
 	      ip_addr_strg=(bgpstream_addr_storage_t *)&bs_elem->peer_address;
-	      ver=(bgpstream_addr_version_t *)&ip_addr_strg->version;
+	      //ver=(bgpstream_addr_version_t *)&ip_addr_strg->version;
+	      ver=ip_addr_strg->version;
 	      ip_version=bgpstream_ipv2number(ver);
-	      
+	      fprintf(stderr,"IP Version = %d\n", ip_version);
 	      if (bgpstream_as_path_snprintf(buf, 4096, bs_elem->aspath) >= 4096)
 		{
 		  fprintf(stderr, "Very long path.....\n");
