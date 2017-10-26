@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include "bgpstream.h"
 
-int
-main()
+
+
+
+int main()
 {
   /* Allocate memory for a bgpstream instance */
   bgpstream_t *bs = bs = bgpstream_create();
@@ -69,30 +71,33 @@ main()
           while((bs_elem = bgpstream_record_get_next_elem (bs_record)) != NULL)
             {
 	      ip_addr_strg=(bgpstream_addr_storage_t *)&bs_elem->peer_address;
-	      //ver=(bgpstream_addr_version_t *)&ip_addr_strg->version;
 	      ver=ip_addr_strg->version;
 	      ip_version=bgpstream_ipv2number(ver);
-	      fprintf(stderr,"IP Version = %d\n", ip_version);
-	      if (bgpstream_as_path_snprintf(buf, 4096, bs_elem->aspath) >= 4096)
-		{
-		  fprintf(stderr, "Very long path.....\n");
-		}
-	      else
-		{
-		  bgpstream_pfx_snprintf(pfx_buf, 128, (bgpstream_pfx_t *)&bs_elem->prefix);
-		  //fprintf(stderr, "IP Version:  IPv%d\n",bgpstream_ipv2number((bgpstream_pfx_t *)&bs_elem->prefix->address));
-		  fprintf(stderr, "%s %s\n",buf,pfx_buf);
-		}
-	      
-		
-              elem_counter++;
-            }
+	      //fprintf(stderr,"IP Version = %d\n", ip_version);
+	      if (ip_version==4){
+		if (bgpstream_as_path_snprintf(buf, 4096, bs_elem->aspath) < 4096)
+		  {
+		    if (buf && buf[0]){
+		      //fprintf(stderr, "Very long path.....\n");
+		      //}
+		      //else
+		      //{
+		      bgpstream_pfx_snprintf(pfx_buf, 128, (bgpstream_pfx_t *)&bs_elem->prefix);
+		      //fprintf(stderr, "IP Version:  IPv%d\n",bgpstream_ipv2number((bgpstream_pfx_t *)&bs_elem->prefix->address));
+		      fprintf(stderr, "%s %s\n",buf,pfx_buf);
+		      //reverse(buf);
+		      //fprintf(stderr, "%s %s\n",buf,pfx_buf);
+		    }
+		  }
+		//elem_counter++;
+	      }
+	    }
         }
     }
   while(get_next_ret > 0);
 
   /* Print the number of elems */
-  printf("\tRead %d elems\n", elem_counter);
+  // printf("\tRead %d elems\n", elem_counter);
 
   /* De-allocate memory for the bgpstream record */
   bgpstream_record_destroy(bs_record);
@@ -102,3 +107,45 @@ main()
 
   return 0;
 }
+
+/*
+
+ 
+int string_length(char *pointer)
+{
+   int c = 0;
+ 
+   while( *(pointer + c) != '\0' )
+      c++;
+ 
+   return c;
+}
+
+
+
+void reverse(char *string) 
+{
+   int length, c;
+   char *begin, *end, temp;
+ 
+   length = string_length(string);
+   begin  = string;
+   end    = string;
+ 
+   for (c = 0; c < length - 1; c++)
+      end++;
+ 
+   for (c = 0; c < length/2; c++)
+   {        
+      temp   = *end;
+      *end   = *begin;
+      *begin = temp;
+ 
+      begin++;
+      end--;
+   }
+}
+
+
+
+*/
