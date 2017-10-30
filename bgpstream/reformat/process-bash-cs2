@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# reverse the order of all space-separated words except the last word.
+
+while read ln; do
+    # copy last word (remove longest match of space searching left->right)
+    new_ln=${ln##* }
+    # reverse order of remaining words by prepending all but last word
+    for it in ${ln% *}; do
+        new_ln="$it|$new_ln"
+    done
+    echo $new_ln
+done

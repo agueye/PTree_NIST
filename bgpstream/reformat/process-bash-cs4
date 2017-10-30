@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# reverse the order of all space-separated words except the last word.
+# shorter variable names runs faster!!
+# 14.4k lines/s vs 20k lines/s
+
+while read x; do
+    # copy last word (remove longest match of space searching left->right)
+    z=${x##* }
+    # reverse order of remaining words by prepending all but last word
+    for i in ${x% *}; do
+        z="$i|$z"
+    done
+    echo $z
+done

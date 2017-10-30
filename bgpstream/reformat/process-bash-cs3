@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# reverse the order of all space-separated words except the last word.
+
+while read very_long_line_variable; do
+    # copy last word (remove longest match of space searching left->right)
+    super_long_other_variable=${very_long_line_variable##* }
+    # reverse order of remaining words by prepending all but last word
+    for i in ${very_long_line_variable% *}; do
+        super_long_other_variable="$i|$super_long_other_variable"
+    done
+    echo $super_long_other_variable
+done
