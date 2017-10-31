@@ -2,4 +2,5 @@ compile:
 gcc -Wall -O3 -o proc-allpaths3{,.c}
 
 run example:
-gunzip < 2015.allpaths.gz | time ./proc-allpaths3 | gzip -1 > 2015-allpaths-reformed.gz
+#gunzip < ../../../2015.allpaths.gz | time ./proc-allpaths3 | gzip -1 > 2015-allpaths-reformed.gz
+gunzip < ../../../datafiles/data-BGPStream/2015.allpaths.gz | time ./proc-allpaths3 | gzip -1 > ../../../datafiles/data-BGPStream/2015-allpaths-reformed.gz

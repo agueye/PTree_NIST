@@ -2,9 +2,10 @@
 # country code (cc) paths.
 
 import pickle
+import gzip
 
 def getccpaths(wmonitors=False,wsets=False,targetcc=[]):
-    fileobject=open(pathDataFilename,'r')
+    fileobject=gzip.open(pathDataFilename,'rt')
     count=0  
     ccmap={} 
     batchsize=40*5000000 # 40 chars per line, 5 million lines
@@ -107,10 +108,11 @@ def write_ccmap_to_disk(wmonitors,wsets,ccmap,oneset=False):
     
 # BEGIN MAIN PROCEDURE ************************************************
 
-pathDataFilename='../20151201_IPV4_with_prefix.all-paths_reduced'
+#pathDataFilename='../20151201_IPV4_with_prefix.all-paths_reduced'
+pathDataFilename='/scratch/CAIDA/PrivacyTree/datafiles/data-BGPSTRM/2015-allpaths-sorted.gz'
 asntocc_filename='../asn_to_cc.pkl'
 
-fileobject=open(asntocc_filename,'r')
+fileobject=open(asntocc_filename,'rb')
 asn_to_cc=pickle.load(fileobject)
 fileobject.close()
 ccset=set(asn_to_cc.values()) # Set of all observed country codes

@@ -22,7 +22,7 @@ for line in data:
         org=linedata[0]
         country=linedata[3]
         if country=='':
-            country='U'
+            country='??'
         org2country[org]=country
     elif section==2:
         asn=linedata[0]
@@ -41,6 +41,6 @@ for asn in asn2org.keys():
     #print asn,asn2country[asn]
 fileobject.close()
 
-fileobject2=open("../asn_to_cc.pkl",'w')
+fileobject2=open("../asn_to_cc.pkl",'wb')
 pickle.dump(asn2country,fileobject2)
 fileobject2.close()
