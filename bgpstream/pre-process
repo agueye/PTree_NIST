@@ -1,47 +1,49 @@
 #!/bin/bash
 
-
-
 #Input line="293 1273 12541 49600 65535 213.170.59.0/24"
 #Output line="65535|49600|12541|1273|293|213.170.59.0/24"
 
-process_line()
-{
-    line=$1
-    pfx=${line##*' '}                       #get the monitor prefix
-    items=$(echo $line | tr " " "\n")       #line to list
-    # Reverse the list
-    items_r=$(echo $items | awk '{ for (i=NF-1; i>1; i--) printf("%s ",$i); print $1; }')
-    ln=$items_r'|'$pfx                      #add the prefix at the end of the list
-    ln=$(echo $ln | tr ' '  '|')            #replace ' ' by '|'
-    echo $ln
-}
+#process_line()
+#{
+#    line=$1
+#    pfx=${line##*' '}                       #get the monitor prefix
+#    items=$(echo $line | tr " " "\n")       #line to list
+#    # Reverse the list
+#    items_r=$(echo $items | awk '{ for (i=NF-1; i>1; i--) printf("%s ",$i); print $1; }')
+#    ln=$items_r'|'$pfx                      #add the prefix at the end of the list
+#    ln=$(echo $ln | tr ' '  '|')            #replace ' ' by '|'
+#    echo $ln
+#}
 
 
 counter=0
-fname=../../datafiles/2015.allpaths.gz  # file to be process
-outf=test_file
+fname=../../datafiles/data-BGPStream/2015.allpaths.gz  # file to be process
+outf=../../datafiles/data-BGPStream/2015.allpaths_processed.gz
 
 # Clean old versions
 if [ -f $outf ]
 then
     rm $outf
-    rm $outf.gz
     echo "Deleted old version"
 fi
 
 
 gunzip < $fname | while read ln
 do
-    counter=$[$counter+1]
-    new_ln=$( process_line "$ln" )
-    echo $new_ln >> $outf
-    if [ $(($counter % 100000)) = 0 ]
-    then
-        sort -u $outf -o $outf
-        echo $counter
-    fi
-done | gzip > $outf.gz
+    #counter=$[$counter+1]
+    new_ln=${ln##*' '}
+    items=$(echo "${ln%' '*}")
+    for it in $items;do
+	new_ln=$it"|"$new_ln
+    done
+    
+    echo $new_ln | gzip >> $outf
+    #if [ $(($counter % 100000)) = 0 ]
+    #then
+    #    sort -u $outf -o $outf
+    #    echo $counter
+    #fi
+done #| gzip > $outf.gz
 
-rm outf # liberate some space....remove uncompressed file 
+#rm outf # liberate some space....remove uncompressed file 
 

@@ -1,0 +1,33 @@
+# ASSOCIATE CC TO COUNTRY NAME
+import pickle
+
+filename='ISO3166-1-Alpha-2-country-codes.csv'
+fileobject=open(filename,'r')
+batchsize=40*5000000 # 40 chars per line, 5 million lines 
+data=fileobject.readlines(batchsize)
+count=0
+cc2name={}
+while data!=[]: # and count<10000:
+    for line in data:
+        count=count+1
+        if count % 1000000==0:
+            print(".")
+            if count % 20000000==0:
+                print(" ",count)
+        linedata=line.split(',') 
+        #print linedata
+        name=linedata[0]
+        code=linedata[-1]
+        code=code.strip()
+        cc2name[code]=name
+        print(code,name)
+    #if count>500000:
+    #    data=[]
+    #else: 
+    #    data=fileobject.readlines(batchsize) # get next batch of lines
+    data=fileobject.readlines(batchsize) # get next batch of lines
+fileobject.close() 
+
+fileobject2=open("../cc_to_name.pkl",'w')
+pickle.dump(cc2name,fileobject2)
+fileobject2.close()

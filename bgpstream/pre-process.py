@@ -1,10 +1,10 @@
 import gzip
 
-filename='../../datafiles/2015.allpaths.gz'
+filename='../../datafiles/data-BGPStream/2015.allpaths.gz'
 fileobject=gzip.open(filename,'rt')
 
 #filename='../../datafiles/2015.allpaths.processed.gz'
-filename='./datafiles/2015.allpaths.processed.gz'
+filename='../../datafiles/data-BGPStream/2015.allpaths.processed.gz'
 fileobject2=gzip.open(filename,'wb')
 
 count=0  
