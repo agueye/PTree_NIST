@@ -1,0 +1,6 @@
+ln -s /usr/lib64/liblzma.so liblzma.so.0
+gcc -I/home/agueye/local/include  -L/home/agueye/local/lib  ./bgpstream-tutorial.c -llzma  -lbgpstream   -o ./tutorial
+
+
+
+./import 2015 | gzip > ../../datafiles/data-BGPSTRM/2015.allpaths.gz &

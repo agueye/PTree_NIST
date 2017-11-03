@@ -1,0 +1,17 @@
+#!/bin/bash
+outdir=../../datafiles/data-BGPSTRM
+[ ! -d $outdir ] && mkdir -v $outdir
+
+#year=2015
+#out=$outdir/$year".allpaths.gz"
+#./import year | gzip >$out &
+
+#year=2016
+#out=$outdir/$year".allpaths.gz"
+#./import year | gzip >$out &
+    
+
+#time parallel --will-cite --eta  ./import 2015 | gzip > ../../datafiles/data-BGPSTRM/2015.allpaths.gz &
+#time parallel --will-cite --eta  ./import 2016 | gzip > ../../datafiles/data-BGPSTRM/2016.allpaths.gz &
+ ./import 2015 | gzip > ../../datafiles/data-BGPSTRM/2015.allpaths.gz &
+ ./import 2016 | gzip > ../../datafiles/data-BGPSTRM/2016.allpaths.gz &

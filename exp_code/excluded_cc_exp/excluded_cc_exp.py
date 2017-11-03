@@ -5,6 +5,28 @@ import pickle
 from random import sample
 from random import choice
 
+EU_cc= ['BE','BG','CZ','DK','DE','EE','IE','EL','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','GB','UK']
+
+def cleanline(linedata):
+    
+    linedata=linedata[0:-1] # strip off monitor name 
+    cleaned=[]
+    prior=0
+    for cc in linedata:
+        if cc=='UK': 
+            cc='GB'
+        if cc=='U' or cc=='??' or cc=='A1': # A1 is anonymous proxy
+            cleaned=[]
+            break
+            #continue
+        if cc in EU_cc:
+            cc='EU'
+        if cc!=prior:
+            cleaned.append(cc)
+        prior=cc
+    return cleaned
+
+
 def import_ccmap(dataset,year):
     filename='../../../datafiles/'+dataset+'pre-processed/'+str(year)+'.ccmap-paths.txt'
     fileobject=open(filename,'r')
@@ -18,22 +40,22 @@ def import_ccmap(dataset,year):
         for line in data:
             line=line.strip('\n')
             count=count+1
-            if count % 1000000==0:
-                print(".")
-                if count % 20000000==0:
-                    print(" ",count)          
+            #if count % 1000000==0:
+            #    print(".")
+            #    if count % 20000000==0:
+            #        print(" ",count)          
             linedata=line.split('|')
-            #print linedata                      
-            cclist=[]
-            prior=None
-            for x in range(len(linedata)-1):
-                cc=linedata[x]  
-                if cc!=prior:
-                    cclist.append(cc) 
-                prior=cc        
-            if 'U' in cclist:
-                thrownout=thrownout+1
+
+
+            if 'U' in linedata or  '??' in linedata:  #Ignore lines with unknown cc
                 continue
+
+            #print linedata                      
+            cclist=cleanline(linedata)
+
+            if len(cclist)==0: # cclist has unknowns or doesn't pertain to src
+                continue
+            
             for x in range(len(cclist)):
                 sublist=cclist[x:]
                 src=sublist[0]
@@ -99,14 +121,15 @@ def excluded_cc_exp(src_cc_set,ccmap,resfile,year,only_src_set=False,both_ways=F
                 # Check forward paths                
                 badp=0
                 goodp=0
-                for path in ccmap[sourcecc][dstcc]:
-                    for excludedcc in excluded:
-                        if excludedcc in path:
-                            badp=badp+1
-                            break
-                    else:
-                        goodp=goodp+1
-                
+                if 1: #dstcc in ccmap[sourcecc]:
+                    for path in ccmap[sourcecc][dstcc]:
+                        for excludedcc in excluded:
+                            if excludedcc in path:
+                                badp=badp+1
+                                break
+                        else:
+                            goodp=goodp+1
+
                 # Check backwards paths  
                 if both_ways:
                     for path in ccmap[dstcc][sourcecc]:
@@ -162,7 +185,7 @@ def excluded_cc_exp(src_cc_set,ccmap,resfile,year,only_src_set=False,both_ways=F
 # BEGIN MAIN PROCEDURE ************************************************
 
 dataset="data-Geolocation/"
-dataset="data-ASN/"
+#dataset="data-ASN/"
 
 
 # These are the country codes that had at least 1 router reporting BGP data and that had
@@ -176,7 +199,7 @@ if dataset=="data-Geolocation/":
     years=[2015, 2016]
     resfile = "Results-Geolocation/excluded/"
 elif dataset=="data-ASN/":
-    years=[2015]
+    years=[2015, 2016]
     resfile = "Results-ASN/excluded/"
 else:
     print("Unknown Dataset....exiting")
@@ -188,14 +211,24 @@ for year in years:
     # This generate the data for the figures (x-axis number of excluded countries, y-axis
     # represents ratios: % good, % bad, % we can give a definitive answer)
     # It also calculates the AUC for the definitive answer for each country
-    only_src_set=False
-    both_ways=False
-    excluded_cc_exp(targetcc,ccmap,resfile,year,only_src_set,both_ways)
+    
+    
+    fileobject2=open("ccmap.pkl",'wb')
+    pickle.dump(ccmap,fileobject2)
+    fileobject2.close()
 
-    only_src_set=True
-    both_ways=False
-    excluded_cc_exp(targetcc,ccmap,resfile,year,only_src_set,both_ways)
 
-    only_src_set=True
-    both_ways=True
-    excluded_cc_exp(targetcc,ccmap,resfile,year,only_src_set,both_ways)
+    if 1:
+        only_src_set=False
+        both_ways=False
+        excluded_cc_exp(targetcc,ccmap,resfile,year,only_src_set,both_ways)
+
+    if 1:
+        only_src_set=True
+        both_ways=False
+        excluded_cc_exp(targetcc,ccmap,resfile,year,only_src_set,both_ways)
+
+    if 1:
+        only_src_set=True
+        both_ways=True
+        excluded_cc_exp(targetcc,ccmap,resfile,year,only_src_set,both_ways)

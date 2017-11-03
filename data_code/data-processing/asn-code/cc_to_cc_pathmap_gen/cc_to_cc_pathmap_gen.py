@@ -4,6 +4,8 @@
 import pickle
 import gzip
 
+base='../../../../../datafiles/data-ASN/pre-processed/'
+
 def getccpaths(wmonitors=False,wsets=False,targetcc=[]):
     fileobject=gzip.open(pathDataFilename,'rt')
     count=0  
@@ -27,7 +29,7 @@ def getccpaths(wmonitors=False,wsets=False,targetcc=[]):
                 if asn in asn_to_cc:
                     cc=asn_to_cc[asn]
                 else:
-                    cc="U"    
+                    cc="??"    
                 if cc!=prior:
                     cclist.append(cc) 
                 prior=cc
@@ -60,7 +62,7 @@ def getccpaths(wmonitors=False,wsets=False,targetcc=[]):
     fileobject.close()    
     return ccmap
 
-def write_ccmap_to_disk(wmonitors,wsets,ccmap,oneset=False):
+def write_ccmap_to_disk(wmonitors,wsets,ccmap,year,oneset=False):
     mode="paths"
     if wsets:
         mode="sets"
@@ -69,13 +71,13 @@ def write_ccmap_to_disk(wmonitors,wsets,ccmap,oneset=False):
     mon=""
     if wmonitors==False:
         mon="-0mon"
-    filename="../datafiles/ccmap-"+mode+mon+".txt"       
+    filename=base+str(year)+".ccmap-"+mode+mon+".txt"       
     fileobject=open(filename,'w')
     print("\nWriting ccmap to files",filename)
-    sources=ccmap.keys()
+    sources=list(ccmap.keys())
     sources.sort()
     for src in sources:
-        destinations=ccmap[src].keys()
+        destinations=list(ccmap[src].keys())
         destinations.sort()
         for dst in destinations:
             if oneset==False:
@@ -108,9 +110,16 @@ def write_ccmap_to_disk(wmonitors,wsets,ccmap,oneset=False):
     
 # BEGIN MAIN PROCEDURE ************************************************
 
+import sys
+if len(sys.argv)==1:
+    year=2015
+else:
+    year=int(sys.argv[1])
+
 #pathDataFilename='../20151201_IPV4_with_prefix.all-paths_reduced'
-pathDataFilename='/scratch/CAIDA/PrivacyTree/datafiles/data-BGPSTRM/2015-allpaths-sorted.gz'
-asntocc_filename='../asn_to_cc.pkl'
+pathDataFilename='/scratch/CAIDA/PrivacyTree/datafiles/data-BGPSTRM/'+str(year)+'-allpaths-sorted.gz'
+asntocc_filename='../asn_to_cc_M.pkl'
+
 
 fileobject=open(asntocc_filename,'rb')
 asn_to_cc=pickle.load(fileobject)
@@ -125,20 +134,20 @@ targetcc=[]
 wmonitors=False
 wsets=True
 ccmap=getccpaths(wmonitors,wsets,targetcc)
-write_ccmap_to_disk(wmonitors,wsets,ccmap) 
-write_ccmap_to_disk(wmonitors,wsets,ccmap,oneset=True) 
+write_ccmap_to_disk(wmonitors,wsets,ccmap,year) 
+write_ccmap_to_disk(wmonitors,wsets,ccmap,year,oneset=True) 
 
 wmonitors=False
 wsets=False
 ccmap=getccpaths(wmonitors,wsets,targetcc)
-write_ccmap_to_disk(wmonitors,wsets,ccmap) 
+write_ccmap_to_disk(wmonitors,wsets,ccmap,year) 
 
 wmonitors=True
 wsets=True
 ccmap=getccpaths(wmonitors,wsets,targetcc)
-write_ccmap_to_disk(wmonitors,wsets,ccmap) 
+write_ccmap_to_disk(wmonitors,wsets,ccmap,year) 
 
 wmonitors=True
 wsets=False
 ccmap=getccpaths(wmonitors,wsets,targetcc)
-write_ccmap_to_disk(wmonitors,wsets,ccmap) 
+write_ccmap_to_disk(wmonitors,wsets,ccmap,year) 

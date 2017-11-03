@@ -1,3 +1,5 @@
+# For each asn, find the country of registration
+
 import pickle
 
 filename='20170101.as-org2info.txt'
